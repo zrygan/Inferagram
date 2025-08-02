@@ -35,6 +35,9 @@ func New(text string) *Corpus {
 	lines := strings.Split(text, "\n")
 	for _, line := range lines {
 		words := strings.Fields(line)
+		for i, word := range words {
+			words[i] = strings.ToLower(word)
+		}
 		sentences = append(sentences, words)
 	}
 	return &Corpus{Sentences: sentences}

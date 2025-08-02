@@ -30,33 +30,60 @@ func (c *AbstractedCorpus) Print() {
 // AbstractCorpus creates an PositionalAbstraction from a Corpus. Assumes that.
 // Corpus is sorted. A PositionalAbstraction is an AbstractedCorpus whose words
 // are assigned a LexicalClass on its position and length of sentence.
-// Ex: "Hello Go Lang" -> Z31 Z32 Z33 (in Znm, m denotes the m-th word of a
-// sentence of length n).
-func (c *Corpus) PositionalAbstraction() *AbstractedCorpus {
-	d := AddDictionary()
+// Ex: "Hello Go Lang" -> P31 P32 P33 (in Pnm, m denotes the m-th word of a
+// sentence of length n; P denotes a Positional LexicalClass).
+func (c *Corpus) PositionalAbstraction(d *Dictionary, lexes []LexicalClass) *AbstractedCorpus {
 	ac := AddAbstractedCorpus()
-
+	lcm := make(LexicalClassMap)
 	lexCounter := 1
 
 	for _, sentence := range c.Sentences {
 		length := len(sentence)
-		var abstractedSentence []LexicalClass
+		var as []LexicalClass
+
 		for _, word := range sentence {
 			if _, exists := d.entries[word]; !exists {
-				lex := AddLexicalClass("Z" + strconv.Itoa(length) + strconv.Itoa(lexCounter))
+				lex := AddLexicalClass("P" + strconv.Itoa(length) + strconv.Itoa(lexCounter))
+				lex.AddWord(word)
+				lcm.Add(lex.class, word)
 				lexCounter++
 
 				d.AddEntry(word, lex)
 
-				abstractedSentence = append(abstractedSentence, *lex)
+				as = append(as, *lex)
 			} else {
-				abstractedSentence = append(abstractedSentence, *d.entries[word])
+				as = append(as, *d.entries[word])
 			}
 		}
 
-		ac.Abstractions = append(ac.Abstractions, abstractedSentence)
+		// if !ac.IsAbstractionUnique(as) {
+		ac.Abstractions = append(ac.Abstractions, as)
+		// }
+
 		lexCounter = 1
 	}
-
 	return ac
+}
+
+// ac.IsAbstractionUnique checks if given in input abstraction, it checks if that
+// abstraction exists in the corpus already (removed redundancy)
+func (ac *AbstractedCorpus) IsAbstractionUnique(as []LexicalClass) bool {
+	for _, abstract := range ac.Abstractions {
+		if len(abstract) != len(as) {
+			continue
+		}
+
+		match := true
+		for i := range abstract {
+			if abstract[i].class != as[i].class {
+				match = false
+				break
+			}
+		}
+
+		if match {
+			return true
+		}
+	}
+	return false
 }
