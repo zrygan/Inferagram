@@ -1,6 +1,8 @@
 package corpus
 
-// Dictionary is a structure that contains DictionaryEntries.
+import "fmt"
+
+// Dictionary is a structure that contains a mapping of string -> LexicalClass.
 type Dictionary struct {
 	entries map[string]*LexicalClass
 }
@@ -16,4 +18,10 @@ func AddDictionary() *Dictionary {
 // LexicalClass.
 func (d *Dictionary) AddEntry(word string, lex *LexicalClass) {
 	d.entries[word] = lex
+}
+
+func (d *Dictionary) Print() {
+	for word, entry := range d.entries {
+		fmt.Println(word, ":", entry.class)
+	}
 }
