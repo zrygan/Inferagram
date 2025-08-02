@@ -13,13 +13,13 @@ type AbstractedCorpus struct {
 // AddAbstractedCorpus created an AbstractedCorpus structure.
 func AddAbstractedCorpus() *AbstractedCorpus {
 	return &AbstractedCorpus{
-		abstractions: [][]LexicalClass{},
+		Abstractions: [][]LexicalClass{},
 	}
 }
 
 // Print displays the tokenized corpus, sentence by sentence.
 func (c *AbstractedCorpus) Print() {
-	for _, sentence := range c.abstractions {
+	for _, sentence := range c.Abstractions {
 		for _, lex := range sentence {
 			fmt.Print(lex.class, " ")
 		}
@@ -54,7 +54,7 @@ func (c *Corpus) PositionalAbstraction() *AbstractedCorpus {
 			}
 		}
 
-		ac.abstractions = append(ac.abstractions, abstractedSentence)
+		ac.Abstractions = append(ac.Abstractions, abstractedSentence)
 		lexCounter = 1
 	}
 
