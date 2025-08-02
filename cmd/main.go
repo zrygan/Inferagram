@@ -11,9 +11,8 @@ func main() {
 	if len(os.Args) < 2 {
 		fmt.Println("Inferagram ~\t Corpus filename is not provided")
 	} else if len(os.Args) == 2 {
-		corpus_struct := corpus.ReadCorpus(os.Args[1])
-
-		corpus.PrintCorpus(corpus_struct)
+		c := corpus.ReadCorpus(os.Args[1])
+		c.PrintCorpus()
 	} else {
 		fmt.Println("Inferagram ~\t More than one corpus provided")
 	}

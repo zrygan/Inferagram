@@ -7,8 +7,7 @@ import (
 )
 
 type Corpus struct {
-	clines []string // the lines of the corpus
-	clen   int      // the numer of lines in the corpus
+	Sentences [][]string
 }
 
 func ReadCorpus(filename string) *Corpus {
@@ -18,20 +17,25 @@ func ReadCorpus(filename string) *Corpus {
 		return nil
 	}
 
-	clines := strings.Split(string(corpus), "\n")
-
-	return NewCorpus(clines, len(clines))
+	return NewCorpus(string(corpus))
 }
 
-func NewCorpus(clines []string, clen int) *Corpus {
+func NewCorpus(text string) *Corpus {
+	var corpus [][]string
+
+	lines := strings.Split(strings.TrimSpace(text), "\n")
+	for _, line := range lines {
+		words := strings.Fields(line)
+		corpus = append(corpus, words)
+	}
+
 	return &Corpus{
-		clines: clines,
-		clen:   len(clines),
+		Sentences: corpus,
 	}
 }
 
-func PrintCorpus(c *Corpus) {
-	for _, line := range c.clines {
-		fmt.Println(line)
+func (c *Corpus) PrintCorpus() {
+	for _, line := range c.Sentences {
+		fmt.Println(strings.Join(line, " "))
 	}
 }
